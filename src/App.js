@@ -58,22 +58,38 @@ function render(){
     ReactDOM.render(<App />, document.getElementById('root'));
 }
 
+function useReducer(reducer, initialState){
+    const [state, setState] = useState(initialState)
+    function dispatch(action){
+        const newState = reducer(state, action)
+        setState(newState)
+    }
+
+    return [state, dispatch]
+}
+
 function App() {
-    const [count, setCount] = useState(0)
-    const [name, setName] = useState('张三')
-    useEffect(() => {
-        console.log('Hello')
-    }, [count])
-    useEffect(() => {
-        console.log('world')
-    }, [name])
+
+    function reducer(state, action){
+        switch (action.type){
+            case 'increment':
+                return state + 1;
+            case 'decrement':
+                return state - 1;
+            default:
+                return state
+        }
+    }
+
+
+    const [count, dispatch] = useReducer(reducer, 0)
     return (
         <div>
             {count}
-            <button onClick={() => setCount(count + 1)}>setCount</button>
-            {name}
-            <button onClick={() => setName('李四')}>setCount</button>
+            <button onClick={() => dispatch({type: 'increment'})}>+1</button>
+            <button onClick={() => dispatch({type: 'decrement'})}>-1</button>
         </div>
+
     );
 }
 
